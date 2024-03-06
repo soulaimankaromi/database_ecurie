@@ -1,0 +1,258 @@
+Enter password: *********
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 28
+Server version: 8.0.36 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2024, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| bd_vol             |
+| centre_formation   |
+| djallabasoft       |
+| ecurie             |
+| hollyod            |
+| hollywood          |
+| information_schema |
+| isgi               |
+| mysql              |
+| onligne            |
+| performance_schema |
+| sys                |
+| tramway            |
++--------------------+
+13 rows in set (0.00 sec)
+
+mysql> drop database ecurie;
+Query OK, 7 rows affected (0.10 sec)
+
+mysql> create database ecurie;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> show databases
+    -> ;
++--------------------+
+| Database           |
++--------------------+
+| bd_vol             |
+| centre_formation   |
+| djallabasoft       |
+| ecurie             |
+| hollyod            |
+| hollywood          |
+| information_schema |
+| isgi               |
+| mysql              |
+| onligne            |
+| performance_schema |
+| sys                |
+| tramway            |
++--------------------+
+13 rows in set (0.00 sec)
+
+mysql> use ecurie;
+Database changed
+
+mysql> CREATE Table person (
+    ->num_person int PRIMARY KEY,
+    ->nom VARCHAR(45),
+    ->prenom VARCHAR(45),
+    ->telephon VARCHAR(45),
+    ->adresse VARCHAR(45),
+    ->fonction VARCHAR(45),
+    ->num_personSup int,
+    ->Foreign Key (num_personSup) REFERENCES person (num_person));
+Query OK, 0 rows affected (0.05 sec)
+
+
+mysql> CREATE Table race(
+    ->nomRace VARCHAR(20) PRIMARY key,
+    ->poidType decimal(10,2),
+    ->tailleType decimal(10,2));
+Query OK, 0 rows affected (0.04 sec)
+
+mysql> CREATE TABLE cheval (
+    ->num_cheval INT PRIMARY KEY,
+    ->nom_cheval VARCHAR(45),
+    ->num_tatouage VARCHAR(45),
+    ->couleur_cheval VARCHAR(45),
+    ->num_chevalPere INT,
+    ->num_chevalMere INT,
+    ->num_persElveur INT,
+    ->nomRace VARCHAR(20),
+    ->FOREIGN KEY (num_chevalPere) REFERENCES cheval (num_cheval),
+    ->FOREIGN KEY (num_chevalMere) REFERENCES cheval (num_cheval),
+    ->FOREIGN KEY (num_persElveur) REFERENCES person (num_person),
+    ->FOREIGN KEY (nomRace) REFERENCES race(nomRace)
+    -> );
+Query OK, 0 rows affected (0.08 sec)
+
+mysql>
+mysql> CREATE TABLE croissance (
+    ->ID_CROISSANCE INT PRIMARY KEY,
+    ->mois INT,
+    ->tailleMois VARCHAR(45),
+    ->poidsMois VARCHAR(45),
+    ->num_cheval INT,
+    ->FOREIGN KEY(num_cheval) REFERENCES cheval(num_cheval));
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> CREATE Table proprietaire (
+    ->num_person int,
+    ->num_cheval int,
+    ->dateAchat date PRIMARY KEY,
+    ->prix_Achat DOUBLE,
+    ->Foreign Key (num_person) REFERENCES person (num_person),
+    ->Foreign Key (num_cheval) REFERENCES cheval (num_cheval));
+Query OK, 0 rows affected (0.07 sec)
+
+mysql> CREATE table concour(
+    ->nomConcour VARCHAR(45)  ,
+    ->anneeConcour int,
+    ->nbrParticipant int,
+    ->PRIMARY KEY (nomConcour, anneeConcour));
+Query OK, 0 rows affected (0.03 sec)
+
+mysql> CREATE TABLE participationConcour (
+    ->num_cheval INT,
+    ->nom_concour VARCHAR(45),
+    ->anneeConcour INT,
+    ->placeConcour VARCHAR(45),
+    ->FOREIGN KEY (num_cheval) REFERENCES cheval(num_cheval),
+    ->FOREIGN KEY (nom_concour, anneeConcour) REFERENCES concour(nomConcour, anneeConcour));
+Query OK, 0 rows affected (0.08 sec)
+
+mysql> show tables ;
++----------------------+
+| Tables_in_ecurie     |
++----------------------+
+| cheval               |
+| concour              |
+| croissance           |
+| participationconcour |
+| person               |
+| proprietaire         |
+| race                 |
++----------------------+
+7 rows in set (0.00 sec)
+
+mysql> desc cheval;
++----------------+-------------+------+-----+---------+-------+
+| Field          | Type        | Null | Key | Default | Extra |
++----------------+-------------+------+-----+---------+-------+
+| num_cheval     | int         | NO   | PRI | NULL    |       |
+| nom_cheval     | varchar(45) | YES  |     | NULL    |       |
+| num_tatouage   | varchar(45) | YES  |     | NULL    |       |
+| couleur_cheval | varchar(45) | YES  |     | NULL    |       |
+| num_chevalPere | int         | YES  | MUL | NULL    |       |
+| num_chevalMere | int         | YES  | MUL | NULL    |       |
+| num_persElveur | int         | YES  | MUL | NULL    |       |
+| nomRace        | varchar(20) | YES  | MUL | NULL    |       |
++----------------+-------------+------+-----+---------+-------+
+8 rows in set (0.00 sec)
+
+mysql> INSERT INTO race (nomRace, poidType, tailleType)
+    -> VALUES
+    -> ('Thoroughbred', 500.00, 160.00),
+    -> ('Arabian', 450.00, 150.00),
+    -> ('Quarter Horse', 550.00, 155.00),
+    -> ('Appaloosa', 520.00, 158.00),
+    -> ('Paint Horse', 510.00, 157.00);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+
+mysql> INSERT INTO person (num_person, nom, prenom, telephon, adresse, fonction, num_personSup)
+    -> VALUES
+    -> (1, 'John', 'Doe', '123456789', '123 Main St', 'Owner', NULL),
+    -> (2, 'Jane', 'Doe', '987654321', '456 Elm St', 'Breeder', NULL),
+    -> (3, 'Alice', 'Smith', '555555555', '789 Oak St', 'Trainer', NULL),
+    -> (4, 'Bob', 'Johnson', '111111111', '321 Pine St', 'Owner', NULL),
+    -> (5, 'Eva', 'Brown', '999999999', '654 Cedar St', 'Breeder', NULL);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO cheval (num_cheval, nom_cheval, num_tatouage, couleur_cheval, num_chevalPere, num_chevalMere, num_persElveur, nomRace)
+    -> VALUES
+    -> (1, 'Horse1', 'TAT001', 'Brown', NULL, NULL, 1, 'Thoroughbred'),
+    -> (2, 'Horse2', 'TAT002', 'Black', NULL, NULL, 2, 'Arabian'),
+    -> (3, 'Horse3', 'TAT003', 'White', NULL, NULL, 3, 'Quarter Horse'),
+    -> (4, 'Horse4', 'TAT004', 'Grey', NULL, NULL, 4, 'Appaloosa'),
+    -> (5, 'Horse5', 'TAT005', 'Bay', NULL, NULL, 5, 'Paint Horse');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO croissance (ID_CROISSANCE, mois, tailleMois, poidsMois, num_cheval)
+    -> VALUES
+    -> (1, 1, '50', '30', 1),
+    -> (2, 2, '55', '35', 1),
+    -> (3, 3, '60', '40', 1),
+    -> (4, 4, '65', '45', 1),
+    -> (5, 5, '70', '50', 1);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> INSERT INTO proprietaire (num_person, num_cheval, dateAchat, prix_Achat)
+    -> VALUES
+    -> (1, 1, '2023-01-01', 5000.00),
+    -> (2, 2, '2023-02-01', 6000.00),
+    -> (3, 3, '2023-03-01', 7000.00),
+    -> (4, 4, '2023-04-01', 8000.00),
+    -> (5, 5, '2023-05-01', 9000.00);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO concour (nomConcour, anneeConcour, nbrParticipant)
+    -> VALUES
+    -> ('Jumping Competition', 2023, 20),
+    -> ('Dressage Competition', 2023, 15),
+    -> ('Racing Competition', 2023, 30),
+    -> ('Show Jumping Competition', 2023, 25),
+    -> ('Endurance Competition', 2023, 10);
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO participationConcour (num_cheval, nom_concour, anneeConcour, placeConcour)
+    -> VALUES
+    -> (1, 'Jumping Competition', 2023, '1st Place'),
+    -> (2, 'Dressage Competition', 2023, '3rd Place'),
+    -> (3, 'Racing Competition', 2023, '2nd Place'),
+    -> (4, 'Show Jumping Competition', 2023, '4th Place'),
+    -> (5, 'Endurance Competition', 2023, '5th Place');
+Query OK, 5 rows affected (0.01 sec)
+Records: 5  Duplicates: 0  Warnings: 0
+
+mysql> show tables;
++----------------------+
+| Tables_in_ecurie     |
++----------------------+
+| cheval               |
+| concour              |
+| croissance           |
+| participationconcour |
+| person               |
+| proprietaire         |
+| race                 |
++----------------------+
+7 rows in set (0.00 sec)
+
+mysql> select * from cheval;
++------------+------------+--------------+----------------+----------------+----------------+----------------+---------------+
+| num_cheval | nom_cheval | num_tatouage | couleur_cheval | num_chevalPere | num_chevalMere | num_persElveur | nomRace       |
++------------+------------+--------------+----------------+----------------+----------------+----------------+---------------+
+|          1 | Horse1     | TAT001       | Brown          |           NULL |           NULL |              1 | Thoroughbred  |
+|          2 | Horse2     | TAT002       | Black          |           NULL |           NULL |              2 | Arabian       |
+|          3 | Horse3     | TAT003       | White          |           NULL |           NULL |              3 | Quarter Horse |
+|          4 | Horse4     | TAT004       | Grey           |           NULL |           NULL |              4 | Appaloosa     |
+|          5 | Horse5     | TAT005       | Bay            |           NULL |           NULL |              5 | Paint Horse   |
++------------+------------+--------------+----------------+----------------+----------------+----------------+---------------+
+5 rows in set (0.00 sec)
